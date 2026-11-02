@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hamla</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+<style>
+  :root { --accent: #15803D; --accent-soft: #DCFCE7; }
+  @media (prefers-color-scheme: dark) { :root { --accent: #86EFAC; --accent-ink: #052E16; --accent-soft: #0F2E1C; } }
+  .bubble { background: #DCF8C6; color: #111; border-radius: 12px 12px 4px 12px; padding: 10px 12px; max-width: 420px; white-space: pre-wrap; box-shadow: 0 1px 2px rgba(0,0,0,.15); }
+  .phone { background: #ECE5DD; border-radius: 16px; padding: 16px; display: grid; justify-items: end; align-content: start; }
+  [dir="rtl"] .phone { justify-items: start; }
+  .funnel { display: grid; gap: 6px; }
+  .funnel div { display: grid; grid-template-columns: 7rem 1fr 4rem; gap: 8px; align-items: center; font-size: .9rem; }
+  .funnel i { display: block; height: 12px; border-radius: 6px; background: var(--accent); }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tags label { display: inline-flex; gap: 6px; align-items: center; padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; cursor: pointer; font-size: .88rem; }
+  .steps ol { margin: 0; padding-inline-start: 20px; display: grid; gap: 6px; }
+  .qrbox img { width: 180px; height: 180px; background: #fff; padding: 8px; border-radius: 12px; border: 1px solid var(--line); }
+  td.num { white-space: nowrap; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="toast" role="status"></div>
+<script src="app.js"></script>
+<script src="demo.js"></script>
+</body>
+</html>

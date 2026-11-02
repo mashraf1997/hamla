@@ -1,0 +1,19 @@
+# One-click deploy on a Hostinger VPS (Docker Manager), or anywhere with Docker:
+#   docker compose up -d
+# Then open http://YOUR-SERVER-IP and create your password.
+services:
+  hamla:
+    image: ghcr.io/mashraf1997/hamla:latest
+    container_name: hamla
+    restart: unless-stopped
+    ports:
+      - "80:3000"
+    environment:
+      - NODE_ENV=production
+      - SETUP_TOKEN=${SETUP_TOKEN:-}
+      - DEMO_MODE=${DEMO_MODE:-false}
+    volumes:
+      - hamla-data:/data
+
+volumes:
+  hamla-data:

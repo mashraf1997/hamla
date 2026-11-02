@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<title>Join on WhatsApp</title>
+<style>
+  /* Public sign-up: the person gives their number and explicit consent */
+  :root { --c: #15803D; --ink: #1C1917; --muted: #6B6760; --bg: #F3F7F4; --card: #FFFFFF; --line: #DCE7DF; color-scheme: light; }
+  @media (prefers-color-scheme: dark) { :root { --ink: #E9EFEA; --muted: #9FAAA2; --bg: #0F1511; --card: #18201A; --line: #2A3A2E; color-scheme: dark; } }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.55 "Segoe UI", "Noto Sans Arabic", Tahoma, system-ui, sans-serif; padding: 28px 16px; }
+  main { max-width: 420px; margin: 0 auto; display: grid; gap: 16px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 22px 18px; display: grid; gap: 14px; }
+  .logo { font-size: 2.6rem; text-align: center; }
+  h1 { margin: 0; font-size: 1.35rem; text-align: center; }
+  p { margin: 0; }
+  .muted { color: var(--muted); }
+  label { display: grid; gap: 6px; font-weight: 600; font-size: .95rem; }
+  input[type=text], input[type=tel] { font: inherit; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); width: 100%; }
+  .consent { display: flex; gap: 10px; align-items: flex-start; font-weight: 400; font-size: .92rem; }
+  .consent input { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--c); flex: none; }
+  .btn { font: inherit; font-weight: 700; border: 0; border-radius: 14px; padding: 14px 18px; background: var(--c); color: #fff; cursor: pointer; width: 100%; }
+  .btn:focus-visible, input:focus-visible { outline: 3px solid var(--c); outline-offset: 2px; }
+  .err { color: #B91C1C; min-height: 1.2em; }
+  .hp { position: absolute; clip-path: inset(50%); width: 1px; height: 1px; overflow: hidden; }
+  .done { text-align: center; font-size: 1.15rem; }
+  .foot { text-align: center; font-size: .78rem; color: var(--muted); }
+  .foot a { color: inherit; }
+</style>
+</head>
+<body>
+<main id="m"><p class="muted">…</p></main>
+<script>
+(function () {
+  'use strict';
+  var S = {
+    ar: { title: 'اشترك على واتساب', name: 'اسمك', phone: 'رقم الواتساب', consent: 'موافق إن {b} يبعتلي رسايل على واتساب. أقدر ألغي في أي وقت بإني أبعت «إلغاء».', join: 'اشترك', done: 'اشتركت ✓ هيوصلك جديدنا على واتساب.', e_consent_required: 'لازم توافق على استلام الرسايل', e_bad_phone: 'اكتب رقم واتساب صحيح', e_too_many: 'محاولات كتير، جرّب بعد شوية', powered: 'بيشتغل بـ' },
+    en: { title: 'Join on WhatsApp', name: 'Your name', phone: 'WhatsApp number', consent: 'I agree that {b} may send me messages on WhatsApp. I can leave any time by sending "stop".', join: 'Join', done: 'You have joined ✓ Our news will reach you on WhatsApp.', e_consent_required: 'Please agree to receive messages', e_bad_phone: 'Enter a valid WhatsApp number', e_too_many: 'Too many tries, please wait', powered: 'Powered by' },
+  };
+  var L = 'ar', m = document.getElementById('m');
+  var tag = new URLSearchParams(location.search).get('tag') || '';
+  function t(k) { return S[L][k]; }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  fetch('/api/join').then(function (r) { return r.json(); }).then(function (info) {
+    L = info.lang === 'en' ? 'en' : 'ar';
+    document.documentElement.lang = L; document.documentElement.dir = L === 'ar' ? 'rtl' : 'ltr';
+    document.title = info.title || t('title');
+    m.innerHTML = '<form class="card" id="f" novalidate><div class="logo">💬</div><h1>' + esc(info.title || info.businessName || t('title')) + '</h1>' + (info.text ? '<p class="muted">' + esc(info.text) + '</p>' : '') +
+      '<label for="n">' + t('name') + '<input id="n" type="text" autocomplete="name"></label>' +
+      '<label for="p">' + t('phone') + '<input id="p" type="tel" inputmode="tel" autocomplete="tel" dir="ltr" placeholder="' + (info.countryCode === '20' ? '01xxxxxxxxx' : '+…') + '"></label>' +
+      '<label class="consent"><input type="checkbox" id="c"><span>' + esc(t('consent').replace('{b}', info.businessName || '')) + '</span></label>' +
+      '<label class="hp" aria-hidden="true">Website<input id="w" tabindex="-1" autocomplete="off"></label>' +
+      '<p class="err" id="e" role="alert"></p><button class="btn" type="submit">' + t('join') + '</button></form>' +
+      '<p class="foot">' + t('powered') + ' <a href="https://github.com/mashraf1997/hamla" rel="noopener">Hamla</a></p>';
+    document.getElementById('f').onsubmit = function (ev) {
+      ev.preventDefault();
+      fetch('/api/join', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name: document.getElementById('n').value, phone: document.getElementById('p').value, consent: document.getElementById('c').checked, tag: tag, website: document.getElementById('w').value }) })
+        .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+        .then(function (r) {
+          if (r.ok) { m.querySelector('form').innerHTML = '<div class="logo">✅</div><p class="done">' + t('done') + '</p>'; return; }
+          document.getElementById('e').textContent = t('e_' + r.d.error) || r.d.error;
+        });
+    };
+  });
+})();
+</script>
+</body>
+</html>

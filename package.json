@@ -1,0 +1,16 @@
+{
+  "name": "hamla",
+  "version": "0.1.0",
+  "description": "Open-source WhatsApp campaigns through the official Cloud API. Contacts with recorded consent, a sign-up page and QR, approved templates with personal fields, paced sending outside quiet hours, delivery, read and reply tracking, and automatic unsubscribe.",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test test/*.test.js"
+  },
+  "engines": { "node": ">=20" },
+  "dependencies": { "qrcode": "1.5.4" },
+  "license": "MIT",
+  "keywords": ["whatsapp", "whatsapp-business", "cloud-api", "broadcast", "marketing", "campaigns", "self-hosted", "arabic"]
+}
